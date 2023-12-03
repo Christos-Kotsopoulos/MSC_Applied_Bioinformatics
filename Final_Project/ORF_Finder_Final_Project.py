@@ -9,8 +9,9 @@ reverse_output_file = open("./Results_reverse_ORF.txt", 'w') ## Open a file that
 
 ## Sample sequence:
 
-## CGCTACGTCTTACGCTGGAGCTCTCATGGATCGGTTCGGTAGGGCTCGATCACATCGCTAACCAT  ##
-## CGCUTCGUCUUTCGCUGGTGCUCUCTUGGTUCGGUUCGGUTGGGCUCGTUCTCTUCGCUTGCCTU  ##
+## 5'- CGCTACGTCTTACGCTGGAGCTCTCATGGATCGGTTCGGTAGGGCTCGATCACATCGCTAACCAT - 3' (standard complement) ##
+
+## 5'- ATGGTTAGCGATGTGATCGAGCCCTACCGAACCGATCCATGAGAGCTCCAGCGTAAGACGTAGCG - 3' (reverse complement)  ##
 
 
 Translation_table = {
@@ -103,22 +104,25 @@ while True :
         if seq_input[i:i+3] == "AUG":
             num_of_AUG = num_of_AUG + 1
 
-    if num_of_AUG > 1:
-        seq_input_for_aug = seq_input
-        seq_input_for_aug = re.split('(AUG)', seq_input_for_aug) ## Getting rid of the sequence infront the AUG codon using regex ##  
-        popped_item = seq_input_for_aug.pop(0) 
-        sub_seq_str = ''.join(seq_input_for_aug) 
-        popped_item_3 = seq_input_for_aug.pop(0) ## Getting rid of the AUG codon to prevent any wrongfully stop codons like A<UAA<AA  ##
-        sub_seq_str = ''.join(seq_input_for_aug)
     
-        ## Counting for the possible stop codons and identifying them ##
-        for i in range(0,len(sub_seq_str), 3):
-            if sub_seq_str[i:i+3] == "UAA":
-                num_of_UAA = num_of_UAA + 1
-            elif  sub_seq_str[i:i+3] == "UAG":
-                num_of_UAG = num_of_UAG + 1
-            elif  sub_seq_str[i:i+3] == "UGA":
-                num_of_UGA = num_of_UGA + 1
+
+        if num_of_AUG >= 1:
+            seq_input_for_aug = seq_input
+            seq_input_for_aug = re.split('(AUG)', seq_input_for_aug) ## Getting rid of the sequence infront the AUG codon using regex ##  
+            popped_item = seq_input_for_aug.pop(0) 
+            sub_seq_str = ''.join(seq_input_for_aug) 
+            popped_item_3 = seq_input_for_aug.pop(0) ## Getting rid of the AUG codon to prevent any wrongfully stop codons like A>UAG<AA  ##
+            sub_seq_str = ''.join(seq_input_for_aug)
+            
+            
+                ## Counting for the possible stop codons and identifying them ##
+            for i in range(0,len(sub_seq_str), 3):
+                if sub_seq_str[i:i+3] == "UAA":
+                    num_of_UAA = num_of_UAA + 1
+                elif  sub_seq_str[i:i+3] == "UAG":
+                    num_of_UAG = num_of_UAG + 1
+                elif  sub_seq_str[i:i+3] == "UGA":
+                    num_of_UGA = num_of_UGA + 1
     
     mscc = num_of_UAG + num_of_UAA + num_of_UGA
     
@@ -146,7 +150,7 @@ while True :
                     if reverse_complement[k:k+3] == "AUG":
                         reverse_num_of_AUG = num_of_AUG + 1
 
-                if reverse_num_of_AUG > 1:
+                if reverse_num_of_AUG >= 1:
                     reverse_seq_input_for_aug = reverse_complement
                     reverse_seq_input_for_aug = re.split('(AUG)', reverse_seq_input_for_aug) ## Getting rid of the sequence infront the AUG codon using regex ##  
                     reverse_popped_item = reverse_seq_input_for_aug.pop(0) 
@@ -194,11 +198,11 @@ while True :
                             reverse_sub_seq_str = ''.join(test_list)
            
 
-                reverse_sub_seq_str = "AUG"+ reverse_sub_seq_str ## Adding the AUD codon that was removed at the start ##
+                reverse_sub_seq_str = "AUG"+ reverse_sub_seq_str ## Adding the AUG codon that was removed at the start ##
 
         
                 reverse_ORF_calculation_check= len(reverse_sub_seq_str)%3
-                if (ORF_calculation_check == 0): ## Checking the triple codon step ##
+                if (reverse_ORF_calculation_check == 0): ## Checking the triple codon step ##
                     print("Your ORF is",reverse_sub_seq_str, "\n" )
                 else :
                     print("No triplets were spotted in your sequence")
@@ -251,13 +255,13 @@ while True :
                     if reverse_complement[k:k+3] == "AUG":
                         reverse_num_of_AUG = num_of_AUG + 1
 
-                if reverse_num_of_AUG > 1:
+                if reverse_num_of_AUG >= 1:
 
                     reverse_seq_input_for_aug = reverse_complement
                     reverse_seq_input_for_aug = re.split('(AUG)', reverse_seq_input_for_aug) ## Getting rid of the sequence infront the AUG codon using regex ##  
                     reverse_popped_item = reverse_seq_input_for_aug.pop(0) 
                     reverse_sub_seq_str = ''.join(reverse_seq_input_for_aug) 
-                    reverse_popped_item_3 = reverse_seq_input_for_aug.pop(0) ## Getting rid of the AUG codon to prevent any wrongfully stop codons like A<UAA<AA  ##
+                    reverse_popped_item_3 = reverse_seq_input_for_aug.pop(0) ## Getting rid of the AUG codon to prevent any wrongfully stop codons like A>UAG<AA  ##
                     reverse_sub_seq_str = ''.join(reverse_seq_input_for_aug)
                 
                     ## Counting for the possible stop codons and identifying them in the reverse sequence ##
@@ -416,12 +420,12 @@ while True :
                     if reverse_complement[k:k+3] == "AUG":
                         reverse_num_of_AUG = num_of_AUG + 1
             
-                if reverse_num_of_AUG > 1:
+                if reverse_num_of_AUG >= 1:
                     reverse_seq_input_for_aug = reverse_complement
                     reverse_seq_input_for_aug = re.split('(AUG)', reverse_seq_input_for_aug) ## Getting rid of the sequence infront the AUG codon using regex ##  
                     reverse_popped_item = reverse_seq_input_for_aug.pop(0) 
                     reverse_sub_seq_str = ''.join(reverse_seq_input_for_aug) 
-                    reverse_popped_item_3 = reverse_seq_input_for_aug.pop(0) 
+                    reverse_popped_item_3 = reverse_seq_input_for_aug.pop(0) ## Getting rid of the AUG codon to prevent any wrongfully stop codons like A>UAG<AA  ##
                     reverse_sub_seq_str = ''.join(reverse_seq_input_for_aug)
 
                     ## Counting for the possible stop codons and identifying them in the reverse sequence ##
